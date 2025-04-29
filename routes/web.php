@@ -54,8 +54,8 @@ Route::prefix('admin')
         Route::put('/authors/{author}', [AuthorController::class, 'update'])->name('admin.authors.update');
         Route::delete('/authors/{author}', [AuthorController::class, 'destroy'])->name('admin.authors.destroy');
     });
-Route::prefix('author')
-    ->middleware('role:author')
+    Route::prefix('author')
+    ->middleware(['role:author|admin'])
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('author.dashboard');
         Route::get('/posts', [AuthorPostController::class, 'index'])->name('author.posts');
@@ -65,16 +65,10 @@ Route::prefix('author')
         Route::put('/posts/{post}', [AuthorPostController::class, 'update'])->name('author.posts.update');
         Route::delete('/posts/{post}', [AuthorPostController::class, 'destroy'])->name('author.posts.destroy');
         Route::get('/posts', [AuthorPostController::class, 'index'])->name('author.posts.show');
-
-
     });
 
     Route::get('/latest-news', [PostController::class, 'latestNews'])->name('latest-news');
-
-    // Route::post('/post/{postId}/comment', [PostController::class, 'addComment'])->name('post.comment');
     Route::post('/post/comment/{postId}', [PostController::class, 'addComment'])->name('post.comment');
-
-    // Route::post('/post/{postId}/like', [PostController::class, 'addLike'])->name('post.like');
     Route::post('/post/like/{postId}', [PostController::class, 'addLike'])->name('post.like');
     Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
     Route::get('/search', [PostController::class, 'search'])->name('post.search');

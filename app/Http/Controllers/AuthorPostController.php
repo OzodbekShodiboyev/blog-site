@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
@@ -15,32 +16,56 @@ use App\Http\Requests\UpdatePostRequest;
 class AuthorPostController extends Controller
 {
 
-    public function index()
+
+    public function index(Request $request)
     {
-        if (!auth()->user()->hasRole('author')) {
-            abort(403, 'Sizda bu sahifaga kirish huquqi yo‘q.');
+        $user = auth()->user();
+        $categories = Category::all();
+        $authors = User::role('author')->get();
+
+        $query = Post::with(['category', 'images', 'user']);
+
+        if (!$user->hasRole('admin')) {
+            $query->where('user_id', $user->id);
         }
 
-        $posts = Post::where('user_id', auth()->id())
-            ->latest()
-            ->paginate(10);
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('name', $request->category);
+            });
+        }
 
-        return view('author.posts.index', compact('posts'));
+        if ($request->filled('author') && $request->author !== 'all') {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', $request->author);
+            });
+        }
+
+        $posts = $query->latest()->get();
+
+        return view('author.posts.index', compact('posts', 'categories', 'authors'));
     }
+
+
     public function create()
     {
-        $categories = auth()->user()->categories;
+        $user = auth()->user();
+
+        if ($user->hasRole('admin')) {
+            $categories = Category::all();
+        } else {
+            $categories = $user->categories;
+        }
+
         return view('author.posts.create', compact('categories'));
     }
+
 
     public function store(PostRequest $request)
     {
         DB::beginTransaction();
 
         try {
-            if (!auth()->user()->categories->contains('id', $request->category_id)) {
-                return back()->with('error', 'Sizga bu kategoriya ruxsat etilmagan.');
-            }
             $nowDate = date("Y-m-d h:i:s");
             // dd($nowDate);
             $post = Post::create([
@@ -62,7 +87,6 @@ class AuthorPostController extends Controller
             }
 
             DB::commit();
-
             return redirect()->route('author.posts.show')->with('success', 'Post muvaffaqiyatli yaratildi!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -74,9 +98,7 @@ class AuthorPostController extends Controller
 
     public function edit(Post $post)
     {
-        if (auth()->id() !== $post->user_id) {
-            abort(403, 'Siz bu postni tahrirlay olmaysiz.');
-        }
+
 
         $canEditPublishedAt = $post->published_at && $post->published_at > now();
 
@@ -87,9 +109,7 @@ class AuthorPostController extends Controller
 
     public function update(UpdatePostRequest $request, Post $post)
     {
-        if ($post->user_id !== auth()->id()) {
-            abort(403, 'Siz bu postni yangilay olmaysiz.');
-        }
+
 
         DB::beginTransaction();
 
@@ -134,10 +154,6 @@ class AuthorPostController extends Controller
 
     public function destroy(Post $post)
     {
-        if ($post->user_id !== auth()->id()) {
-            abort(403, 'Siz bu postni o\'chirib bo\'lmaysiz.');
-        }
-
         DB::beginTransaction();
 
         try {

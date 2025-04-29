@@ -5,10 +5,13 @@
     </div>
     <nav class="menu">
         <ul>
-            <li ><a href="{{route('admin.dashboard')}}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li ><a href="{{route('admin.dashboard')}}"><i class="fas fa-tachometer-alt"></i>Admin Dashboard</a></li>
             <li><a href="{{route('admin.users')}}"><i class="fas fa-users"></i> Users</a></li>
             <li><a href="{{route('admin.category')}}"><i class="fas fa-ticket"></i> Category</a></li>
             <li><a href="{{route('admin.authors')}}"><i class="fas fa-user"></i> Authors</a></li>
+
+            <li><a href="{{ route('author.posts.create') }}"><i class="fas fa-plus"></i> Create Post</a></li>
+            <li><a href="{{ route('author.posts.show') }}"><i class="fas fa-book"></i> Posts</a></li>
             <li>
                 <form action="{{ route('logout') }}" method="post">
                     @csrf
