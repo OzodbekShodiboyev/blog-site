@@ -14,6 +14,9 @@
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
+                @if(session('success'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
 
                 @if($posts->isEmpty())
                     <p>Hozircha post yaratilmagan.</p>
@@ -25,6 +28,7 @@
                                 <th>Kategoriya</th>
                                 <th>Rasmlar</th>
                                 <th>Yaratilgan</th>
+                                <th>Chop etish vaqti</th>
                                 <th>Amallar</th>
                             </tr>
                         </thead>
@@ -43,6 +47,7 @@
                                         @endif
                                     </td>
                                     <td>{{ $post->created_at->format('d.m.Y H:i') }}</td>
+                                    <td>{{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->format('d.m.Y H:i') : 'Darhol' }}</td>
                                     <td>
                                         <a href="{{ route('author.posts.edit', $post->id) }}" class="btn btn-sm btn-warning">Tahrirlash</a>
 
@@ -55,6 +60,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
+
                     </table>
                 @endif
 

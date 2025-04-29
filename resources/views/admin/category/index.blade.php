@@ -34,7 +34,7 @@
                                     class="btn btn-warning">Tahrirlash</a>
 
                                 <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST"
-                                    style="display:inline;">
+                                    style="display:inline;" class="delete-form">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">O‘chirish</button>
@@ -47,5 +47,19 @@
 
         </div>
     </main>
-    </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.querySelectorAll('.delete-form').forEach((form) => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const categoryName = this.querySelector('button[type="submit"]').innerText;
+
+                if (confirm("Diqqat! Ushbu kategoriya o'chiriladi. Bu kategoriya bilan bog'liq postlar ham o'chirilishi mumkin. Davom etish uchun tasdiqlang.")) {
+                    this.submit();
+                }
+            });
+        });
+    </script>
+@endpush

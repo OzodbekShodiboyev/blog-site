@@ -34,11 +34,12 @@
                                     <td>{{ $user->getRoleNames()->first() }}</td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 10px;">
-                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST">
+                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Ushbu foydalanuvchini o‘chirishni istaysizmi?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-delete">Delete</button>
                                             </form>
+
                                             <a href="{{ route('admin.users.edit', $user->id) }}"
                                                 class="btn btn-edit">Edit</a>
                                         </div>

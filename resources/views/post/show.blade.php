@@ -35,20 +35,20 @@
                     </div>
                 @endif
 
-                <!-- Post Content -->
                 <div class="post-content mb-5">
                     <p class="lead">{{ $post->content }}</p>
                 </div>
 
-                <!-- Like Button -->
                 @auth
                     <div class="text-center mb-5">
-                        <form action="{{ route('post.like', $post->id) }}" method="POST">
+                        <form class="like-form" data-post-id="{{ $post->id }}">
                             @csrf
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="far fa-thumbs-up"></i> {{ $post->likes->count() }} Like
+                            <button type="submit" class="btn btn-link like-btn">
+                                <i class="far fa-thumbs-up mr-2"></i><span class="like-count">{{ $post->likes->count() }}</span> Like
                             </button>
                         </form>
+
+
                     </div>
                 @else
                     <div class="text-center mb-5">
@@ -59,7 +59,6 @@
                     </div>
                 @endauth
 
-                <!-- Comments Section -->
                 <div class="comments-section">
                     <h4 class="font-weight-bold mb-4">Comments ({{ $post->comments->count() }})</h4>
 
@@ -77,13 +76,28 @@
                     @endforeach
 
                     @auth
-                        <div class="comment-form mt-4">
-                            <form action="{{ route('post.comment', $post->id) }}" method="POST">
-                                @csrf
-                                <textarea class="form-control" name="content" rows="3" placeholder="Add a comment..."></textarea>
-                                <button type="submit" class="btn btn-success mt-3">Post Comment</button>
-                            </form>
+                    <div class="comments-section">
+                        <div class="comments-list">
+                            @foreach ($post->comments as $comment)
+                                <div class="d-flex mb-3">
+                                    <img class="rounded-circle mr-2" src="{{ asset('assets/img/user.jpg') }}" width="25" height="25" alt="">
+                                    <div>
+                                        <small>{{ $comment->user ? $comment->user->name : 'Unknown Commenter' }}</small>
+                                        <p>{{ $comment->content }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
+
+                        @auth
+                        <form class="comment-form" data-post-id="{{ $post->id }}">
+                            @csrf
+                            <textarea name="content" class="form-control" rows="3" placeholder="Add a comment..."></textarea>
+                            <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+                        </form>
+                        @endauth
+                    </div>
+
                     @else
                         <p class="mt-3"><small><a href="{{ route('login') }}">Log in</a> to comment.</small></p>
                     @endauth
@@ -99,4 +113,60 @@
             document.getElementById('mainImage').src = imageUrl;
         }
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".like-form").submit(function(e) {
+                e.preventDefault();
+
+                var postId = $(this).data("post-id");
+                var likeCountElement = $(this).find(".like-count");
+
+                $.ajax({
+                    url: "/post/like/" + postId,
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        likeCountElement.text(response.likeCount);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error occurred: " + error);
+                    }
+                });
+            });
+        });
+
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".comment-form").submit(function(e) {
+                e.preventDefault();
+
+                var postId = $(this).data("post-id");
+                var content = $(this).find("textarea[name='content']").val();
+                var commentContainer = $(this).closest(".comments-section").find(".comments-list");
+
+                $.ajax({
+                    url: "/post/comment/" + postId,
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        content: content,
+                    },
+                    success: function(response) {
+                        var commentHtml = '<div class="d-flex mb-3"><img class="rounded-circle mr-2" src="{{ asset('assets/img/user.jpg') }}" width="25" height="25" alt=""><div><small>' + response.userName + '</small><p>' + response.content + '</p></div></div>';
+                        commentContainer.prepend(commentHtml);
+                        $("textarea[name='content']").val('');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error occurred: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+
 @endpush

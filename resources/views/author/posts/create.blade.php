@@ -40,6 +40,12 @@
                             <input type="file" name="images[]" id="images" class="form-control" multiple
                                 accept="image/*">
                         </div>
+                        <div class="form-group">
+                            <label for="published_at">Chop etish vaqti (ixtiyoriy)</label>
+                            <input type="datetime-local" name="published_at" id="published_at" class="form-control">
+                            <small class="form-text text-muted">Agar bo‘sh qoldirilsa, post hozirda chop etiladi.</small>
+                        </div>
+
 
                         <button type="submit" class="btn btn-primary mt-2">Post yaratish</button>
                     </form>

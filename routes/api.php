@@ -7,4 +7,6 @@ use App\Http\Controllers\Api\Postcontroller;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth.basic');
+
 Route::get('/posts', [Postcontroller::class, 'index']);
+Route::get('/posts/{id}', [Postcontroller::class, 'show']);
