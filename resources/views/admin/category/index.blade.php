@@ -1,74 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('admin.layouts.main')
+@section('title', 'Dashboard')
+@section('content')
+    <!-- Main Content -->
+    <main class="main-content">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
+        <!-- Content -->
+        <div class="content">
+            <h2 style="margin-bottom: 20px">Kategoriyalar</h2>
 
-<body>
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
-                <i class="fas fa-cog"></i>
-                <span>Admin Panel</span>
-            </div>
-            @include('admin.components.navbar')
-        </aside>
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-        <!-- Main Content -->
-        <main class="main-content">
+            <a href="{{ route('admin.category.create') }}" class="btn btn-primary">Kategoriya yaratish</a>
 
-            <!-- Content -->
-            <div class="content">
-                <h2 style="margin-bottom: 20px">Kategoriyalar</h2>
-
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                <a href="{{ route('admin.category.create') }}" class="btn btn-primary">Kategoriya yaratish</a>
-
-                <table class="table">
-                    <thead>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($categors as $category)
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Actions</th>
+                            <td>{{ $category->id }}</td>
+                            <td>{{ $category->name }}</td>
+                            <td>
+                                <a href="{{ route('admin.category.edit', $category->id) }}"
+                                    class="btn btn-warning">Tahrirlash</a>
+
+                                <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">O‘chirish</button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($categors as $category)
-                            <tr>
-                                <td>{{ $category->id }}</td>
-                                <td>{{ $category->name }}</td>
-                                <td>
-                                    <a href="{{ route('admin.category.edit', $category->id) }}"
-                                        class="btn btn-warning">Tahrirlash</a>
+                    @endforeach
+                </tbody>
+            </table>
 
-                                    <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST"
-                                        style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">O‘chirish</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-
-            </div>
-        </main>
+        </div>
+    </main>
     </div>
-
-    <script src="{{ asset('assets/js/admin.js') }}"></script>
-</body>
-
-</html>
+@endsection
