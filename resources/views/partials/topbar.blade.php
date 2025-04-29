@@ -44,9 +44,5 @@
                         class="text-secondary font-weight-normal">News</span></h1>
             </a>
         </div>
-        <div class="col-lg-8 text-center text-lg-right">
-            <a href="https://htmlcodex.com"><img class="img-fluid" src="assets/img/ads-728x90.png"
-                    alt=""></a>
-        </div>
     </div>
 </div>

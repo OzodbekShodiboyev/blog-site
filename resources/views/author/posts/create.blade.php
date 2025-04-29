@@ -1,26 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('author.layouts.main')
+@section('title', 'Dashboard')
+@section('content')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Author Panel</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-
-<body>
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
-                <i class="fas fa-cog"></i>
-                <span>Author Panel</span>
-            </div>
-            @include('author.components.navbar')
-        </aside>
-
-        <!-- Main Content -->
         <main class="main-content">
 
             <!-- Content -->
@@ -68,8 +49,4 @@
             </div>
         </main>
     </div>
-
-    <script src="{{ asset('assets/js/admin.js') }}"></script>
-</body>
-
-</html>
+@endsection
