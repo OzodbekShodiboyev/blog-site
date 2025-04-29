@@ -9704,3 +9704,30 @@ h6,
   body.loaded #loader {
     display: none;
   }
+
+   /* Extra style for thumbnails */
+   .thumbnail-img {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+.thumbnail-img:hover {
+    border: 2px solid #007bff;
+    transform: scale(1.05);
+}
+.main-image {
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.post-header h2 {
+    font-size: 2rem;
+}
+.comment {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px 15px;
+}
+.comment-form textarea {
+    resize: none;
+}
